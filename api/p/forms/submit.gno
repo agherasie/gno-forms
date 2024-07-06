@@ -26,3 +26,12 @@ func (db *FormDatabase) SubmitForm(formID string, answers string) {
 
 	db.Answers = append(db.Answers, answer)
 }
+
+func (db *FormDatabase) GetAnswer(formID string, authorID string) *Submission {
+	for _, answer := range db.Answers {
+		if answer.FormID == formID && answer.Author.String() == authorID {
+			return answer
+		}
+	}
+	return nil
+}

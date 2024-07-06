@@ -108,6 +108,10 @@ func ValidateAnswers(answers string, fields []Field) bool {
 		return false
 	}
 
+	if len(fields) != unmarshalled.Size() {
+		return false
+	}
+
 	for i, field := range fields {
 		answer, err := unmarshalled.GetIndex(i)
 		if err != nil {
