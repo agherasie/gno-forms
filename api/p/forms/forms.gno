@@ -34,19 +34,21 @@ type Form struct {
 	CloseAt string
 }
 
-type Answers struct {
+type Submission struct {
 	FormID string
 
 	Author std.Address
 	
 	/* ["Alex", 21, true, 0, [0, 1]] */
 	Answers string // json
+
+	SubmittedAt string
 }
 
 type FormDatabase struct {
 	Forms []*Form
 	
-	Answers []*Answers
+	Answers []*Submission
 
 	IDCounter seqid.ID
 }
@@ -54,6 +56,6 @@ type FormDatabase struct {
 func NewDatabase() *FormDatabase {
 	return &FormDatabase{
 		Forms: make([]*Form, 0),
-		Answers: make([]*Answers, 0),
+		Answers: make([]*Submission, 0),
 	}
 }  
