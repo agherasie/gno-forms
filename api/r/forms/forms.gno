@@ -7,10 +7,7 @@ import (
 var db *forms.FormDatabase
 
 func init() {
-	db = &forms.FormDatabase{
-		Forms: make([]*forms.Form, 0),
-		Answers: make([]*forms.Answers, 0),
-	}
+	db = forms.NewDatabase()
 }
 
 func CreateForm(title string, description string, openAt string, closeAt string, data string) string {
