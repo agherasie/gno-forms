@@ -4,6 +4,7 @@ import { FC, PropsWithChildren } from "react";
 import { CreatedForm } from "../type";
 import { selectColor } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { useAccountStore } from "../store";
 
 const FormCard: FC<
   PropsWithChildren<{ withDetails?: boolean } & CardProps>
@@ -34,6 +35,8 @@ interface FormCardDetailsProps {
 const FormCardDetails: FC<FormCardDetailsProps> = ({ formDetails }) => {
   const navigate = useNavigate();
 
+  const { account } = useAccountStore();
+
   return (
     <VStack
       spacing={0}
@@ -42,7 +45,11 @@ const FormCardDetails: FC<FormCardDetailsProps> = ({ formDetails }) => {
       _hover={{
         outline: `1px solid ${colors.gray[500]}`,
       }}
-      onClick={() => navigate(`submit/${formDetails.id}`)}
+      onClick={() =>
+        account?.address === formDetails.owner
+          ? navigate(`results/${formDetails.id}/${account.address}`)
+          : navigate(`submit/${formDetails.id}`)
+      }
     >
       <FormCard
         bg={selectColor(+formDetails.id)}

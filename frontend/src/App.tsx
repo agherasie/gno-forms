@@ -10,6 +10,7 @@ import { GnoWSProvider } from "@gnolang/gno-js-client";
 import { constants } from "./constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FormSubmit from "./pages/FormSubmit";
+import FormResults from "./pages/FormResults";
 
 const Layout: FC = () => (
   <VStack w="100%" align="start" spacing={0}>
@@ -44,6 +45,7 @@ const App: FC = () => {
               <Route index element={<Home />} />
               <Route path="create" element={<FormCreation />} />
               <Route path="submit/:id" element={<FormSubmit />} />
+              <Route path="results/:id/:author" element={<FormResults />} />
             </Route>
           </Routes>
         </BrowserRouter>
