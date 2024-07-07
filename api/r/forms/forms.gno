@@ -16,7 +16,30 @@ func CreateForm(title string, description string, openAt string, closeAt string,
 	return db.CreateForm(title, description, openAt, closeAt, data)
 }
 
-func GetForm(id string) string {
+func GetForms() string {
+	formsJson := json.ArrayNode("", []*json.Node{})
+	for _, form := range db.Forms {
+		formJson := json.ObjectNode("", map[string]*json.Node{
+			"id": json.StringNode("id", form.ID),
+			"owner": json.StringNode("owner", form.Owner.String()),
+			"title": json.StringNode("title", form.Title),
+			"description": json.StringNode("description", form.Description),
+			"createdAt": json.StringNode("createdAt", form.CreatedAt),
+			"openAt": json.StringNode("openAt", form.OpenAt),
+			"closeAt": json.StringNode("closeAt", form.CloseAt),
+		})
+		formsJson.AppendArray(formJson)
+	}
+
+	encoded, err := json.Marshal(formsJson)
+	if err != nil {
+		panic(ufmt.Errorf("error: %v", err))
+	}
+
+	return string(encoded)
+}
+
+func GetFormByID(id string) string {
 	form := db.GetForm(id)
 	if form == nil {
 		panic(ufmt.Errorf("Form not found: %s", id))
