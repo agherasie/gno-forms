@@ -11,6 +11,7 @@ import { useAccountStore } from "../../store";
 import { constants } from "../../constants";
 import { buildDataJson } from "../../utils";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const FormCreation: FC = () => {
   const methods = useForm<FormCreationData>({
@@ -40,51 +41,54 @@ const FormCreation: FC = () => {
 
   const toast = useToast();
 
+  const queryClient = useQueryClient();
+
+  const { mutate: createForm } = useMutation({
+    mutationFn: (payload: CreateFormDto) =>
+      AdenaService.sendTransaction(
+        [
+          {
+            type: EMessageType.MSG_CALL,
+            value: {
+              caller: account?.address ?? "",
+              send: "",
+              pkg_path: constants.realmPath,
+              func: "CreateForm",
+              args: Object.values(payload),
+            },
+          },
+        ],
+        5000000
+      ),
+    onSuccess: () => {
+      toast({
+        title: "Form created",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      navigate("/");
+      queryClient.invalidateQueries({ queryKey: ["forms"] });
+    },
+    onError: () =>
+      toast({
+        title: "Form creation failed",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      }),
+  });
+
   const onSubmit = handleSubmit((data) => {
     if (!account) return;
 
-    const payload: CreateFormDto = {
+    createForm({
       title: data.title,
       description: data.description,
       openAt: data.openAt,
       closeAt: data.closeAt,
       data: buildDataJson(data.fields),
-    };
-
-    console.log(payload);
-
-    AdenaService.sendTransaction(
-      [
-        {
-          type: EMessageType.MSG_CALL,
-          value: {
-            caller: account.address,
-            send: "",
-            pkg_path: constants.realmPath,
-            func: "CreateForm",
-            args: Object.values(payload),
-          },
-        },
-      ],
-      5000000
-    )
-      .then(() => {
-        toast({
-          title: "Form created",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-        navigate("/");
-      })
-      .catch(() =>
-        toast({
-          title: "Form creation failed",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        })
-      );
+    });
   });
 
   return (
