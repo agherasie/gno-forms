@@ -47,7 +47,7 @@ const FormCardDetails: FC<FormCardDetailsProps> = ({ formDetails }) => (
       p="8px"
     >
       <VStack w="100%" align="start" spacing={0}>
-        {formDetails.fields.map((field) => (
+        {formDetails.fields.slice(0, 5).map((field) => (
           <Text fontSize="14px" key={field.label}>
             - {field.label}
           </Text>
@@ -65,7 +65,15 @@ const FormCardDetails: FC<FormCardDetailsProps> = ({ formDetails }) => (
       <Text fontWeight="bold" fontSize="12px">
         {formDetails.title}
       </Text>
-      <Text fontSize="10px">{formDetails.description}</Text>
+      <Text
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+        overflow="hidden"
+        width="120px"
+        fontSize="10px"
+      >
+        {formDetails.description}
+      </Text>
     </Box>
   </VStack>
 );
