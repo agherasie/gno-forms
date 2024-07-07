@@ -19,6 +19,16 @@ func CreateForm(title string, description string, openAt string, closeAt string,
 func GetForms() string {
 	formsJson := json.ArrayNode("", []*json.Node{})
 	for _, form := range db.Forms {
+		fieldsJson := json.ArrayNode("", []*json.Node{})
+		for _, field := range form.Fields {
+			fieldJson := json.ObjectNode("", map[string]*json.Node{
+				"label": json.StringNode("label", field.Label),
+				"fieldType": json.StringNode("fieldType", field.FieldType),
+				"required": json.BoolNode("required", field.Required),
+			})
+			fieldsJson.AppendArray(fieldJson)
+		} 
+
 		formJson := json.ObjectNode("", map[string]*json.Node{
 			"id": json.StringNode("id", form.ID),
 			"owner": json.StringNode("owner", form.Owner.String()),
@@ -27,6 +37,7 @@ func GetForms() string {
 			"createdAt": json.StringNode("createdAt", form.CreatedAt),
 			"openAt": json.StringNode("openAt", form.OpenAt),
 			"closeAt": json.StringNode("closeAt", form.CloseAt),
+			"fields": fieldsJson,
 		})
 		formsJson.AppendArray(formJson)
 	}

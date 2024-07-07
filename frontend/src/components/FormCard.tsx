@@ -1,6 +1,8 @@
 import { Box, Card, CardProps, Text, VStack } from "@chakra-ui/react";
 import { colors } from "../theme";
 import { FC, PropsWithChildren } from "react";
+import { CreatedForm } from "../type";
+import { selectColor } from "../utils";
 
 const FormCard: FC<
   PropsWithChildren<{ withDetails?: boolean } & CardProps>
@@ -14,8 +16,8 @@ const FormCard: FC<
     }}
     color="gray.700"
     boxShadow="none"
-    h="150px"
-    w="200px"
+    h="120px"
+    w="160px"
     bg="white"
     align="center"
     justify="center"
@@ -26,10 +28,9 @@ const FormCard: FC<
 );
 
 interface FormCardDetailsProps {
-  title: string;
-  createdAt: string;
+  formDetails: CreatedForm;
 }
-const FormCardDetails: FC<FormCardDetailsProps> = ({ createdAt, title }) => (
+const FormCardDetails: FC<FormCardDetailsProps> = ({ formDetails }) => (
   <VStack
     spacing={0}
     cursor="pointer"
@@ -39,22 +40,32 @@ const FormCardDetails: FC<FormCardDetailsProps> = ({ createdAt, title }) => (
     }}
   >
     <FormCard
-      bg="gray.100"
+      bg={selectColor(+formDetails.id)}
       borderRadius="4px"
       borderBottomRadius="0px"
       withDetails
-    ></FormCard>
+      p="8px"
+    >
+      <VStack w="100%" align="start" spacing={0}>
+        {formDetails.fields.map((field) => (
+          <Text fontSize="14px" key={field.label}>
+            - {field.label}
+          </Text>
+        ))}
+      </VStack>
+    </FormCard>
     <Box
       w="100%"
       px="12px"
       borderBottomRadius="4px"
+      bg={selectColor(+formDetails.id, 75, 90)}
       border={`1px solid ${colors.gray[300]}`}
       borderTop="none"
     >
       <Text fontWeight="bold" fontSize="12px">
-        {title}
+        {formDetails.title}
       </Text>
-      <Text fontSize="10px">{createdAt}</Text>
+      <Text fontSize="10px">{formDetails.description}</Text>
     </Box>
   </VStack>
 );

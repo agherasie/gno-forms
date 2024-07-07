@@ -21,6 +21,17 @@ export interface FormCreationData {
   closeAt: string;
 }
 
+export interface CreatedForm {
+  id: string;
+  title: string;
+  owner: string;
+  description: string;
+  createdAt: string;
+  openAt: string;
+  closeAt: string;
+  fields: { label: string; description: string; fieldType: string }[];
+}
+
 export interface CreateFormDto {
   title: string;
   description: string;

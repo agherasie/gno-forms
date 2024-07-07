@@ -1,10 +1,13 @@
 import { ChakraProvider, HStack, VStack } from "@chakra-ui/react";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import theme, { colors } from "./theme";
 import FormCreation from "./pages/FormCreation";
 import ConnectWallet from "./components/ConnectWallet";
+import { useProviderStore } from "./store";
+import { GnoWSProvider } from "@gnolang/gno-js-client";
+import { constants } from "./constants";
 
 const Layout: FC = () => (
   <VStack w="100%" align="start" spacing={0}>
@@ -21,17 +24,25 @@ const Layout: FC = () => (
   </VStack>
 );
 
-const App: FC = () => (
-  <ChakraProvider theme={theme}>
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="create" element={<FormCreation />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  </ChakraProvider>
-);
+const App: FC = () => {
+  const { setProvider } = useProviderStore();
+  useEffect(() => {
+    const provider = new GnoWSProvider(constants.chainRPC);
+    setProvider(provider);
+  }, [setProvider]);
+
+  return (
+    <ChakraProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="create" element={<FormCreation />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ChakraProvider>
+  );
+};
 
 export default App;

@@ -1,11 +1,27 @@
 import { Icon, Text, VStack, Wrap } from "@chakra-ui/react";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import FormCard, { FormCardDetails } from "../components/FormCard";
 import { useNavigate } from "react-router-dom";
+import { constants } from "../constants";
+import { useProviderStore } from "../store";
+import { parseDataJson } from "../utils";
+import { CreatedForm } from "../type";
 
 const Home: FC = () => {
   const navigate = useNavigate();
+
+  const { provider } = useProviderStore();
+
+  const [forms, setForms] = useState<CreatedForm[]>([]);
+
+  useEffect(() => {
+    if (!("evaluateExpression" in provider!)) return;
+
+    provider
+      .evaluateExpression(constants.realmPath, `GetForms()`)
+      .then((res) => setForms(parseDataJson(res)));
+  }, [provider]);
 
   return (
     <VStack w="100%" align="start" spacing={0}>
@@ -32,16 +48,9 @@ const Home: FC = () => {
           Recent forms
         </Text>
         <Wrap shouldWrapChildren spacing="24px">
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
-          <FormCardDetails title="Form 1" createdAt="2021-10-10" />
+          {forms.map((form) => (
+            <FormCardDetails key={form.id} formDetails={form} />
+          ))}
         </Wrap>
       </VStack>
     </VStack>
