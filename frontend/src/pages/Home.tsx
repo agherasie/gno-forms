@@ -1,6 +1,5 @@
-import { Divider, Icon, Text, VStack, Wrap } from "@chakra-ui/react";
+import { Icon, Text, VStack, Wrap } from "@chakra-ui/react";
 import { FC } from "react";
-import ConnectWallet from "../components/ConnectWallet";
 import { FaPlusCircle } from "react-icons/fa";
 import FormCard, { FormCardDetails } from "../components/FormCard";
 import { useNavigate } from "react-router-dom";
@@ -10,8 +9,6 @@ const Home: FC = () => {
 
   return (
     <VStack w="100%" align="start" spacing={0}>
-      <ConnectWallet />
-      <Divider />
       <VStack
         align="start"
         spacing="24px"

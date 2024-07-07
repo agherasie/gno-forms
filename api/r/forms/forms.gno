@@ -104,7 +104,7 @@ func SubmitForm(formID string, answers string) {
 func Render(path string) string {
 	response := "Forms:\n\n"
 	for _, form := range db.Forms {
-		response += ufmt.Sprintf("- %s\n\n", GetForm(form.ID))
+		response += ufmt.Sprintf("- %s\n\n", GetFormByID(form.ID))
 	}
 	response += "Answers:\n\n"
 	for _, answer := range db.Answers {

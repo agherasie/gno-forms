@@ -20,3 +20,11 @@ export interface FormCreationData {
   openAt: string;
   closeAt: string;
 }
+
+export interface CreateFormDto {
+  title: string;
+  description: string;
+  openAt: string;
+  closeAt: string;
+  data: string; // JSON.stringify
+}
