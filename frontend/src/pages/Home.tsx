@@ -3,8 +3,11 @@ import { FC } from "react";
 import ConnectWallet from "../components/ConnectWallet";
 import { FaPlusCircle } from "react-icons/fa";
 import FormCard, { FormCardDetails } from "../components/FormCard";
+import { useNavigate } from "react-router-dom";
 
 const Home: FC = () => {
+  const navigate = useNavigate();
+
   return (
     <VStack w="100%" align="start" spacing={0}>
       <ConnectWallet />
@@ -21,7 +24,7 @@ const Home: FC = () => {
           Start a new form
         </Text>
         <VStack align="start" spacing={0}>
-          <FormCard>
+          <FormCard onClick={() => navigate("create")}>
             <Icon as={FaPlusCircle} fontSize="26px" />
           </FormCard>
           <Text>Blank form</Text>
