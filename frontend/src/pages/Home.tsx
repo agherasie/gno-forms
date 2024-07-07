@@ -1,27 +1,37 @@
-import { Icon, Text, VStack, Wrap } from "@chakra-ui/react";
-import { FC, useEffect, useState } from "react";
+import {
+  HStack,
+  Icon,
+  Skeleton,
+  Spinner,
+  Text,
+  VStack,
+  Wrap,
+} from "@chakra-ui/react";
+import { FC, useEffect } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import FormCard, { FormCardDetails } from "../components/FormCard";
 import { useNavigate } from "react-router-dom";
 import { constants } from "../constants";
 import { useProviderStore } from "../store";
 import { parseDataJson } from "../utils";
-import { CreatedForm } from "../type";
+import { useQuery } from "@tanstack/react-query";
 
 const Home: FC = () => {
   const navigate = useNavigate();
 
   const { provider } = useProviderStore();
 
-  const [forms, setForms] = useState<CreatedForm[]>([]);
+  useEffect(() => {}, [provider]);
 
-  useEffect(() => {
-    if (!("evaluateExpression" in provider!)) return;
-
-    provider
-      .evaluateExpression(constants.realmPath, `GetForms()`)
-      .then((res) => setForms(parseDataJson(res)));
-  }, [provider]);
+  const { data, isLoading } = useQuery({
+    queryKey: ["forms"],
+    enabled: "evaluateExpression" in provider!,
+    queryFn: () => {
+      return provider
+        ?.evaluateExpression(constants.realmPath, `GetForms()`)
+        .then((res) => parseDataJson(res));
+    },
+  });
 
   return (
     <VStack w="100%" align="start" spacing={0}>
@@ -44,13 +54,20 @@ const Home: FC = () => {
         </VStack>
       </VStack>
       <VStack align="start" spacing="24px" px="25%" py="24px" w="100%">
-        <Text fontSize="18px" fontWeight="bold">
-          Recent forms
-        </Text>
+        <HStack spacing="12px">
+          <Text fontSize="18px" fontWeight="bold">
+            Recent forms
+          </Text>
+          {isLoading && <Spinner size="sm" />}
+        </HStack>
         <Wrap shouldWrapChildren spacing="24px">
-          {forms.map((form) => (
-            <FormCardDetails key={form.id} formDetails={form} />
-          ))}
+          {isLoading ? (
+            <Skeleton h="150px" w="160px" borderRadius="4px" />
+          ) : (
+            data?.map((form) => (
+              <FormCardDetails key={form.id} formDetails={form} />
+            ))
+          )}
         </Wrap>
       </VStack>
     </VStack>

@@ -8,6 +8,7 @@ import ConnectWallet from "./components/ConnectWallet";
 import { useProviderStore } from "./store";
 import { GnoWSProvider } from "@gnolang/gno-js-client";
 import { constants } from "./constants";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const Layout: FC = () => (
   <VStack w="100%" align="start" spacing={0}>
@@ -24,6 +25,8 @@ const Layout: FC = () => (
   </VStack>
 );
 
+const queryClient = new QueryClient();
+
 const App: FC = () => {
   const { setProvider } = useProviderStore();
   useEffect(() => {
@@ -32,16 +35,18 @@ const App: FC = () => {
   }, [setProvider]);
 
   return (
-    <ChakraProvider theme={theme}>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="create" element={<FormCreation />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="create" element={<FormCreation />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ChakraProvider>
+    </QueryClientProvider>
   );
 };
 
