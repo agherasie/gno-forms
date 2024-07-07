@@ -70,13 +70,16 @@ const FormCreation: FC = () => {
       navigate("/");
       queryClient.invalidateQueries({ queryKey: ["forms"] });
     },
-    onError: () =>
+    onError: (e, data) => {
+      console.error(e);
+      console.error(data);
       toast({
         title: "Form creation failed",
         status: "error",
         duration: 5000,
         isClosable: true,
-      }),
+      });
+    },
   });
 
   const onSubmit = handleSubmit((data) => {

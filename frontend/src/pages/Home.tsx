@@ -7,7 +7,7 @@ import {
   VStack,
   Wrap,
 } from "@chakra-ui/react";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import FormCard, { FormCardDetails } from "../components/FormCard";
 import { useNavigate } from "react-router-dom";
@@ -15,22 +15,28 @@ import { constants } from "../constants";
 import { useProviderStore } from "../store";
 import { parseDataJson } from "../utils";
 import { useQuery } from "@tanstack/react-query";
+import { CreatedForm } from "../type";
 
 const Home: FC = () => {
   const navigate = useNavigate();
 
   const { provider } = useProviderStore();
 
-  useEffect(() => {}, [provider]);
-
   const { data, isLoading } = useQuery({
     queryKey: ["forms"],
     enabled: "evaluateExpression" in provider!,
-    queryFn: () => {
-      return provider
+    queryFn: () =>
+      provider
         ?.evaluateExpression(constants.realmPath, `GetForms()`)
-        .then((res) => parseDataJson(res));
-    },
+        .then((res) => {
+          const form: CreatedForm[] = parseDataJson(res);
+          return form.map((f) => ({
+            ...f,
+            openAt: f.openAt.split(" ").slice(0, 2).join(" "),
+            closeAt: f.closeAt.split(" ").slice(0, 2).join(" "),
+            createdAt: f.createdAt.split(" ").slice(0, 2).join(" "),
+          }));
+        }),
   });
 
   return (

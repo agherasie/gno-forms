@@ -1,4 +1,4 @@
-import { CreatedForm, FieldData, FieldType } from "../type";
+import { FieldData, FieldType } from "../type";
 
 export const buildDataJson = (fields: FieldData[]) =>
   JSON.stringify(
@@ -27,19 +27,21 @@ export const buildDataJson = (fields: FieldData[]) =>
     )
   );
 
-export const parseDataJson = (data: string): CreatedForm[] => {
-  const form: CreatedForm[] = JSON.parse(
-    data.slice(2, -'" string)'.length).replaceAll("\\", "")
-  );
-  return form.map((f) => ({
-    ...f,
-    openAt: f.openAt.split(" ").slice(0, 2).join(" "),
-    closeAt: f.closeAt.split(" ").slice(0, 2).join(" "),
-    createdAt: f.createdAt.split(" ").slice(0, 2).join(" "),
-  }));
-};
+export const parseDataJson = (data: string) =>
+  JSON.parse(data.slice(2, -'" string)'.length).replaceAll("\\", ""));
 
 export function selectColor(number: number, saturation = 50, lightness = 75) {
   const hue = number * 137.508; // use golden angle approximation
   return `hsl(${hue},${saturation}%,${lightness}%)`;
 }
+
+export const translateFieldType = (fieldType: string): FieldType => {
+  if (fieldType.startsWith("[") && fieldType.endsWith("]"))
+    return FieldType.CHOICE;
+  if (fieldType.startsWith("{") && fieldType.endsWith("}"))
+    return FieldType.MULTI_CHOICE;
+  return fieldType as FieldType;
+};
+
+export const parseChoices = (fieldType: string) =>
+  fieldType.slice(1, -1).split("|");

@@ -29,7 +29,12 @@ export interface CreatedForm {
   createdAt: string;
   openAt: string;
   closeAt: string;
-  fields: { label: string; description: string; fieldType: string }[];
+  fields: {
+    label: string;
+    description: string;
+    fieldType: string;
+    required: boolean;
+  }[];
 }
 
 export interface CreateFormDto {
