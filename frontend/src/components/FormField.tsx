@@ -92,12 +92,17 @@ const FormField: FC<FormFieldProps> = ({ idx, field }) => {
           <Icon
             fontSize="18px"
             as={FaTrash}
-            onClick={() =>
-              field.onChange(field.value.filter((_, i) => i !== idx))
-            }
-            cursor="pointer"
             color="gray.600"
-            _hover={{ color: "red.500" }}
+            onClick={
+              field.value.length === 1
+                ? undefined
+                : () => field.onChange(field.value.filter((_, i) => i !== idx))
+            }
+            _hover={
+              field.value.length === 1
+                ? { cursor: "not-allowed" }
+                : { color: "red.500", cursor: "pointer" }
+            }
           />
         </HStack>
       </HStack>
@@ -110,16 +115,22 @@ const FormField: FC<FormFieldProps> = ({ idx, field }) => {
                 <Icon
                   as={FaTrash}
                   fontSize="12px"
-                  _hover={{ color: "red.500" }}
                   color="gray.500"
-                  cursor="pointer"
-                  onClick={() =>
-                    onChange({
-                      ...value,
-                      options: (value.options ?? []).filter(
-                        (_, i) => i !== optionIdx
-                      ),
-                    })
+                  _hover={
+                    value.options?.length === 1
+                      ? { cursor: "not-allowed" }
+                      : { color: "red.500", cursor: "pointer" }
+                  }
+                  onClick={
+                    value.options?.length === 1
+                      ? undefined
+                      : () =>
+                          onChange({
+                            ...value,
+                            options: (value.options ?? []).filter(
+                              (_, i) => i !== optionIdx
+                            ),
+                          })
                   }
                 />
                 <Editable

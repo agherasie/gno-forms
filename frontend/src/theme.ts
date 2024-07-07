@@ -7,11 +7,12 @@ const Button = defineStyleConfig({
   },
   variants: {
     primary: {
-      p: "0px",
+      bg: "gray.800",
       fontFamily: "heading",
-      color: "gray.800",
+      color: "gray.100",
       _hover: {
-        color: "gray.900",
+        bg: "gray.700",
+        color: "gray.200",
       },
       transitionDuration: "0.5s",
     },
