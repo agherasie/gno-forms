@@ -1,7 +1,7 @@
 package forms
 
 import (
-	"gno.land/p/demo/forms"
+	"gno.land/p/g1w62226g8hykfmtuasvz80rdf0jl6phgxsphh5v/testing/forms"
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
 )
