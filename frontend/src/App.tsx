@@ -6,7 +6,7 @@ import theme, { colors } from "./theme";
 import FormCreation from "./pages/FormCreation";
 import ConnectWallet from "./components/ConnectWallet";
 import { useProviderStore } from "./store";
-import { GnoWSProvider } from "@gnolang/gno-js-client";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { constants } from "./constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FormSubmit from "./pages/FormSubmit";
@@ -32,7 +32,7 @@ const queryClient = new QueryClient();
 const App: FC = () => {
   const { setProvider } = useProviderStore();
   useEffect(() => {
-    const provider = new GnoWSProvider(constants.chainRPC);
+    const provider = new GnoJSONRPCProvider(constants.chainRPC);
     setProvider(provider);
   }, [setProvider]);
 

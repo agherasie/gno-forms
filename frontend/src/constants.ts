@@ -1,5 +1,6 @@
 export const constants = {
-  chainID: "dev",
-  chainRPC: "ws://127.0.0.1:26657/websocket",
-  realmPath: "gno.land/r/demo/forms",
+  chainID: "test4",
+  chainRPC: "https://rpc.test4.gno.land",
+  realmPath:
+    "gno.land/r/g1w62226g8hykfmtuasvz80rdf0jl6phgxsphh5v/testing/forms",
 };
