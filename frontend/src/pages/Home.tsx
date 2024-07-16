@@ -24,7 +24,7 @@ const Home: FC = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["forms"],
-    enabled: "evaluateExpression" in provider!,
+    enabled: !!provider && "evaluateExpression" in provider,
     queryFn: () =>
       provider
         ?.evaluateExpression(constants.realmPath, `GetForms()`)

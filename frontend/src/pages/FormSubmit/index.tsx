@@ -35,7 +35,7 @@ const FormSubmit: FC = () => {
 
   const { data: form, isLoading } = useQuery({
     queryKey: [id ?? "id", "forms"],
-    enabled: "evaluateExpression" in provider!,
+    enabled: !!provider && "evaluateExpression" in provider,
     queryFn: () => {
       return provider
         ?.evaluateExpression(constants.realmPath, `GetFormByID("${id}")`)

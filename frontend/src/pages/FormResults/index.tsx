@@ -21,7 +21,7 @@ const FormResults: FC = () => {
 
   const { data: form, isFetching: isLoadingQuestions } = useQuery({
     queryKey: [id ?? "id", "forms"],
-    enabled: "evaluateExpression" in provider!,
+    enabled: !!provider && "evaluateExpression" in provider,
     queryFn: () => {
       return provider
         ?.evaluateExpression(constants.realmPath, `GetFormByID("${id}")`)
