@@ -1,6 +1,6 @@
 # Gno Forms
 
-`gno-forms` is form-editing application inspired by Google's "Google Forms" using [gno.land](https://gno.land)
+`gno-forms` is a form-editing application inspired by Google's "Google Forms" using [gno.land](https://gno.land)
 
 ---
 
