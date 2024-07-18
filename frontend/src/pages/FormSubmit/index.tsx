@@ -144,7 +144,14 @@ const FormSubmit: FC = () => {
           <VStack align="start" spacing="16px" w="100%">
             {form?.fields.map((field, idx) => (
               <VStack w="100%" key={field.label} align="start" spacing="16px">
-                <FormControl isRequired={field.required}>
+                <FormControl
+                  isRequired={
+                    translateFieldType(field.fieldType) ===
+                    FieldType.MULTI_CHOICE
+                      ? false
+                      : field.required
+                  }
+                >
                   <FormLabel>{field.label}</FormLabel>
                   <Controller
                     control={control}

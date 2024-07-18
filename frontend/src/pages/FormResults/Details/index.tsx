@@ -10,6 +10,7 @@ import { FC } from "react";
 import { FieldType } from "../../../type";
 import useGetUrlFormDetails from "../../../hooks/useGetUrlFormDetails";
 import useGetUrlSubmissionDetails from "../../../hooks/useGetUrlSubmissionDetails";
+import { parseChoices, translateFieldType } from "../../../utils";
 
 const FormSubmission: FC = () => {
   const { data: form, isFetching: isLoadingQuestions } = useGetUrlFormDetails();
@@ -37,18 +38,31 @@ const FormSubmission: FC = () => {
         <Spinner />
       ) : (
         <VStack w="100%" align="start" spacing="16px">
-          {form?.fields.map((field, idx) => (
-            <VStack key={field.label} w="100%" align="start" spacing={0}>
-              <Text fontSize="20px">{field.label}</Text>
-              <Text fontSize="16px" color="gray.500">
-                {field.fieldType === FieldType.BOOLEAN
-                  ? answers?.at(idx)
-                    ? "Yes"
-                    : "No"
-                  : answers?.at(idx) ?? "No answer"}
-              </Text>
-            </VStack>
-          ))}
+          {form?.fields.map((field, idx) => {
+            let answer = answers?.at(idx) ?? "";
+            const fieldType = translateFieldType(field.fieldType);
+            if (fieldType === FieldType.BOOLEAN)
+              answer = +answer ? "Yes" : "No";
+            else if (fieldType === FieldType.CHOICE) {
+              const choices = parseChoices(field.fieldType);
+              answer = choices[+answer];
+            } else if (fieldType === FieldType.MULTI_CHOICE) {
+              const choices = parseChoices(field.fieldType);
+              const answers = [];
+              for (let i = 0; i < answer.length; i++) {
+                answers.push(choices[i]);
+              }
+              answer = answers.join(", ");
+            }
+            return (
+              <VStack key={field.label} w="100%" align="start" spacing={0}>
+                <Text fontSize="20px">{field.label}</Text>
+                <Text fontSize="16px" color="gray.500">
+                  {answer}
+                </Text>
+              </VStack>
+            );
+          })}
         </VStack>
       )}
     </VStack>
