@@ -20,7 +20,7 @@ const FormCreation: FC = () => {
       description: "Form description",
       fields: [
         {
-          fieldType: FieldType.TEXT,
+          fieldType: FieldType.STRING,
           label: "Untitled question",
           required: false,
         },

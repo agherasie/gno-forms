@@ -40,7 +40,7 @@ const FormFields: FC = () => {
               onClick={() =>
                 field.onChange(
                   field.value.concat({
-                    fieldType: FieldType.TEXT,
+                    fieldType: FieldType.STRING,
                     label: "Untitled question",
                     required: false,
                   })

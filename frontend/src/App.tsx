@@ -10,6 +10,7 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { constants } from "./constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FormSubmit from "./pages/FormSubmit";
+import FormSubmission from "./pages/FormResults/Details";
 import FormResults from "./pages/FormResults";
 
 const Layout: FC = () => (
@@ -45,7 +46,10 @@ const App: FC = () => {
               <Route index element={<Home />} />
               <Route path="create" element={<FormCreation />} />
               <Route path="submit/:id" element={<FormSubmit />} />
-              <Route path="results/:id/:author" element={<FormResults />} />
+              <Route path="results/:id">
+                <Route index element={<FormResults />} />
+                <Route path=":author" element={<FormSubmission />} />
+              </Route>
             </Route>
           </Routes>
         </BrowserRouter>

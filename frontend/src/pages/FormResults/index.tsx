@@ -1,77 +1,42 @@
-import {
-  Divider,
-  Heading,
-  Skeleton,
-  Spinner,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Card, Code, Spinner, Text, VStack } from "@chakra-ui/react";
 import { FC } from "react";
-import { useParams } from "react-router-dom";
-import { constants } from "../../constants";
-import { useProviderStore } from "../../store";
-import { CreatedForm, FieldType } from "../../type";
-import { parseDataJson } from "../../utils";
-import { useQuery } from "@tanstack/react-query";
+import useGetUrlFormDetails from "../../hooks/useGetUrlFormDetails";
+import { useNavigate } from "react-router-dom";
+import { selectColor } from "../../utils";
 
 const FormResults: FC = () => {
-  const { provider } = useProviderStore();
+  const navigate = useNavigate();
 
-  const { id, author } = useParams();
+  const { data, isLoading } = useGetUrlFormDetails();
 
-  const { data: form, isFetching: isLoadingQuestions } = useQuery({
-    queryKey: [id ?? "id", "forms"],
-    enabled: !!provider && "evaluateExpression" in provider,
-    queryFn: () =>
-      provider
-        ?.evaluateExpression(constants.realmPath, `GetFormByID("${id}")`)
-        .then((res) => parseDataJson(res) as CreatedForm),
-  });
-
-  const { data: answers, isFetching: isLoadingAnswers } = useQuery({
-    queryKey: [author ?? "author", "answers"],
-    enabled: "evaluateExpression" in provider!,
-    queryFn: () =>
-      provider
-        ?.evaluateExpression(
-          constants.realmPath,
-          `GetAnswer("${id}", "${author}")`
-        )
-        .then((res) => parseDataJson(res) as string[]),
-  });
+  if (!data?.submissions) return null;
 
   return (
     <VStack w="100%" px="25%" py="48px" spacing="24px">
-      <VStack align="start" spacing="8px">
-        {isLoadingQuestions ? (
-          <Skeleton w="100px" h="24px" />
-        ) : (
-          <Heading fontSize="24px" fontWeight="bold">
-            {form?.title}
-          </Heading>
-        )}
-        {isLoadingQuestions ? (
-          <Skeleton w="100%" h="24px" />
-        ) : (
-          <span>{form?.title}</span>
-        )}
-      </VStack>
-      <Divider />
-      {isLoadingQuestions || isLoadingAnswers ? (
+      {isLoading ? (
         <Spinner />
       ) : (
-        <VStack w="100%" align="start" spacing="16px">
-          {form?.fields.map((field, idx) => (
-            <VStack key={field.label} w="100%" align="start" spacing={0}>
-              <Text fontSize="20px">{field.label}</Text>
-              <Text fontSize="16px" color="gray.500">
-                {field.fieldType === FieldType.BOOLEAN
-                  ? answers?.at(idx)
-                    ? "Yes"
-                    : "No"
-                  : answers?.at(idx) ?? "No answer"}
+        <VStack w="100%" h="100%">
+          {Object.entries(data?.submissions).map(([key, value], idx) => (
+            <Card
+              bg={selectColor(idx)}
+              key={key}
+              onClick={() => navigate(key)}
+              w="100%"
+              p="16px"
+              cursor="pointer"
+              align="start"
+              _hover={{
+                bg: selectColor(idx, 75, 75),
+              }}
+              gap="12px"
+            >
+              <Text>{key}</Text>
+              <Code>{value.answers}</Code>
+              <Text ml="auto" color="gray.200">
+                {new Date(value.submittedAt).toLocaleString()}
               </Text>
-            </VStack>
+            </Card>
           ))}
         </VStack>
       )}

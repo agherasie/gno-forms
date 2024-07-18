@@ -11,33 +11,12 @@ import { FC } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import FormCard, { FormCardDetails } from "../components/FormCard";
 import { useNavigate } from "react-router-dom";
-import { constants } from "../constants";
-import { useProviderStore } from "../store";
-import { parseDataJson } from "../utils";
-import { useQuery } from "@tanstack/react-query";
-import { CreatedForm } from "../type";
+import useGetAllForms from "../hooks/useGetAllForms";
 
 const Home: FC = () => {
   const navigate = useNavigate();
 
-  const { provider } = useProviderStore();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["forms"],
-    enabled: !!provider && "evaluateExpression" in provider,
-    queryFn: () =>
-      provider
-        ?.evaluateExpression(constants.realmPath, `GetForms()`)
-        .then((res) => {
-          const form: CreatedForm[] = parseDataJson(res);
-          return form.map((f) => ({
-            ...f,
-            openAt: f.openAt?.split(" ").slice(0, 2).join(" "),
-            closeAt: f.closeAt?.split(" ").slice(0, 2).join(" "),
-            createdAt: f.createdAt.split(" ").slice(0, 2).join(" "),
-          }));
-        }),
-  });
+  const { data, isLoading } = useGetAllForms();
 
   return (
     <VStack w="100%" align="start" spacing={0}>

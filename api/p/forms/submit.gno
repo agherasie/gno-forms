@@ -35,7 +35,7 @@ func (db *FormDatabase) SubmitForm(formID string, answers string) {
 		FormID:      formID,
 		Answers:     answers,
 		Author:      std.PrevRealm().Addr(),
-		SubmittedAt: time.Now().String(),
+		SubmittedAt: time.Now(),
 	}
 	db.Answers = append(db.Answers, &answer)
 }

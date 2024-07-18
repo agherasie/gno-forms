@@ -1,5 +1,5 @@
 export enum FieldType {
-  TEXT = "text",
+  STRING = "string",
   NUMBER = "number",
   BOOLEAN = "boolean",
   CHOICE = "choice",
@@ -35,6 +35,7 @@ export interface CreatedForm {
     fieldType: string;
     required: boolean;
   }[];
+  submissions?: Record<string, { submittedAt: string; answers: string }>;
 }
 
 export interface CreateFormDto {

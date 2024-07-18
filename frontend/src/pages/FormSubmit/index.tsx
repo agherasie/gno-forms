@@ -1,10 +1,10 @@
 import { FC, useEffect, useMemo } from "react";
 import { constants } from "../../constants";
-import { useAccountStore, useProviderStore } from "../../store";
-import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { parseChoices, parseDataJson, translateFieldType } from "../../utils";
-import { CreatedForm, FieldType } from "../../type";
+import { useAccountStore } from "../../store";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { parseChoices, translateFieldType } from "../../utils";
+import { FieldType } from "../../type";
 import {
   Button,
   chakra,
@@ -28,20 +28,10 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { AdenaService } from "../../services/adena/adena";
 import { EMessageType } from "../../services/adena/adena.types";
+import useGetUrlFormDetails from "../../hooks/useGetUrlFormDetails";
 
 const FormSubmit: FC = () => {
-  const { provider } = useProviderStore();
-
-  const { id } = useParams();
-
-  const { data: form, isLoading } = useQuery({
-    queryKey: [id ?? "id", "forms"],
-    enabled: !!provider && "evaluateExpression" in provider,
-    queryFn: () =>
-      provider
-        ?.evaluateExpression(constants.realmPath, `GetFormByID("${id}")`)
-        .then((res) => parseDataJson(res) as CreatedForm),
-  });
+  const { data: form, isLoading } = useGetUrlFormDetails();
 
   const { account } = useAccountStore();
 
@@ -93,7 +83,7 @@ const FormSubmit: FC = () => {
   const { control, handleSubmit } = useForm();
 
   const onSubmit = handleSubmit((data) => {
-    if (!account) return;
+    if (!account || !form) return;
 
     const args = (data.fields as []).map((answer, idx) => {
       const fieldType = translateFieldType(
@@ -112,7 +102,7 @@ const FormSubmit: FC = () => {
       return answer;
     });
 
-    submitForm([id!, JSON.stringify(args)]);
+    submitForm([form.id, JSON.stringify(args)]);
   });
 
   useEffect(() => {
@@ -161,7 +151,7 @@ const FormSubmit: FC = () => {
                     name={`fields.${idx}`}
                     render={({ field: rhfField }) => (
                       <>
-                        {field.fieldType === FieldType.TEXT && (
+                        {field.fieldType === FieldType.STRING && (
                           <Input
                             {...rhfField}
                             placeholder="Type your answer here"

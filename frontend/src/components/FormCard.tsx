@@ -47,7 +47,7 @@ const FormCardDetails: FC<FormCardDetailsProps> = ({ formDetails }) => {
       }}
       onClick={() =>
         account?.address === formDetails.owner
-          ? navigate(`results/${formDetails.id}/${account.address}`)
+          ? navigate(`results/${formDetails.id}`)
           : navigate(`submit/${formDetails.id}`)
       }
     >

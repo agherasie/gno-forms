@@ -27,8 +27,10 @@ export const buildDataJson = (fields: FieldData[]) =>
     )
   );
 
-export const parseDataJson = (data: string) =>
-  JSON.parse(data.slice(2, -'" string)'.length).replaceAll("\\", ""));
+export const parseDataJson = <T>(data: string): T => {
+  const content = data.slice(2, -'" string)'.length).replaceAll("\\", "");
+  return JSON.parse(content);
+};
 
 export function selectColor(number: number, saturation = 50, lightness = 75) {
   const hue = number * 137.508; // use golden angle approximation

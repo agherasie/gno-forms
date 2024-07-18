@@ -44,7 +44,7 @@ type Submission struct {
 	/* ["Alex", 21, true, 0, [0, 1]] */
 	Answers string // json
 
-	SubmittedAt string
+	SubmittedAt time.Time
 }
 
 type FormDatabase struct {
@@ -116,4 +116,16 @@ func (db *FormDatabase) GetAnswer(formID string, author std.Address) *Submission
 		}
 	}
 	return nil
+}
+
+func (db *FormDatabase) GetSubmissionsByFormID(formID string) []*Submission {
+	submissions := make([]*Submission, 0)
+
+	for _, answer := range db.Answers {
+		if answer.FormID == formID {
+			submissions = append(submissions, answer)
+		}
+	}
+
+	return submissions
 }
