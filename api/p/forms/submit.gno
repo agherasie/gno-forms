@@ -16,15 +16,12 @@ func (db *FormDatabase) SubmitForm(formID string, answers string) {
 
 	// Check if form was already submitted by this user
 	previousAnswer := db.GetAnswer(formID, std.PrevRealm().Addr())
-	if previousAnswer == nil {
+	if previousAnswer != nil {
 		panic("You already submitted this form")
 	}
 
 	// Check time restrictions
 	if !form.IsOpen() {
-		panic("Form is not open yet")
-	} 
-	if  form.IsClosed() {
 		panic("Form is closed")
 	}
 

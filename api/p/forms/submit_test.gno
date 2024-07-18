@@ -35,7 +35,7 @@ func TestAnswerForm(t *testing.T) {
 		}
 	]`
 
-	formID := db.CreateForm("Test Form", "Test Description", "2020-01-01", "2020-01-02", data)
+	formID := db.CreateForm("Test Form", "Test Description", "", "", data)
 	answers := `["Alex", 21, true, 0, [0, 1]]`
 
 	db.SubmitForm(formID, answers)

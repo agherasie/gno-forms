@@ -63,11 +63,25 @@ func NewDatabase() *FormDatabase {
 }
 
 func (form *Form) IsOpen() bool {
-	return form.openAt.Before(time.Now())
-}
+	openAt, errOpen := form.OpenAt()
+	closedAt, errClose := form.CloseAt()
 
-func (form *Form) IsClosed() bool {
-	return form.closeAt.Before(time.Now())
+	noOpenDate := errOpen != nil
+	noCloseDate := errClose != nil
+
+	if noOpenDate && noCloseDate {
+		return true
+	}
+
+	if noOpenDate && !noCloseDate {
+		return time.Now().Before(closedAt)
+	}
+
+	if !noOpenDate && noCloseDate {
+		return time.Now().After(openAt)
+	}
+
+	return time.Now().After(openAt) && time.Now().Before(closedAt)
 }
 
 func (form *Form) OpenAt() (time.Time, error) {
