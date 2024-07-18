@@ -32,8 +32,8 @@ const Home: FC = () => {
           const form: CreatedForm[] = parseDataJson(res);
           return form.map((f) => ({
             ...f,
-            openAt: f.openAt.split(" ").slice(0, 2).join(" "),
-            closeAt: f.closeAt.split(" ").slice(0, 2).join(" "),
+            openAt: f.openAt?.split(" ").slice(0, 2).join(" "),
+            closeAt: f.closeAt?.split(" ").slice(0, 2).join(" "),
             createdAt: f.createdAt.split(" ").slice(0, 2).join(" "),
           }));
         }),

@@ -37,8 +37,6 @@ func GetForms() string {
 			"title":       json.StringNode("title", form.Title),
 			"description": json.StringNode("description", form.Description),
 			"createdAt":   json.StringNode("createdAt", form.CreatedAt.String()),
-			"openAt":      json.StringNode("openAt", form.OpenAt.String()),
-			"closeAt":     json.StringNode("closeAt", form.CloseAt.String()),
 			"fields":      fieldsJson,
 		})
 		formsJson.AppendArray(formJson)
@@ -68,20 +66,23 @@ func GetFormByID(id string) string {
 		fieldsJson.AppendArray(fieldJson)
 	}
 
-	encoded, _ := json.Marshal(fieldsJson)
-	ufmt.Println(string(encoded))
-	ufmt.Println("DWADAWDWA")
-
 	jsonRes := json.ObjectNode("", map[string]*json.Node{
 		"id":          json.StringNode("id", form.ID),
 		"owner":       json.StringNode("owner", form.Owner.String()),
 		"title":       json.StringNode("title", form.Title),
 		"description": json.StringNode("description", form.Description),
 		"createdAt":   json.StringNode("createdAt", form.CreatedAt.String()),
-		"openAt":      json.StringNode("openAt", form.OpenAt.String()),
-		"closeAt":     json.StringNode("closeAt", form.CloseAt.String()),
 		"fields":      fieldsJson,
 	})
+
+	openAt, err := form.OpenAt()
+	if err == nil {
+		jsonRes.AppendObject("openAt", json.StringNode("openAt", openAt.String()))
+	}
+	closeAt, err := form.CloseAt()
+	if err == nil {
+		jsonRes.AppendObject("closeAt", json.StringNode("closeAt", closeAt.String()))
+	}
 
 	encoded, err := json.Marshal(jsonRes)
 	if err != nil {

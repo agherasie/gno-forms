@@ -8,33 +8,38 @@ import (
 )
 
 func (db *FormDatabase) SubmitForm(formID string, answers string) {
+	// Check if form exists
 	form := db.GetForm(formID)
 	if form == nil {
 		panic(ufmt.Errorf("Form not found: %s", formID))
 	}
 
+	// Check if form was already submitted by this user
 	previousAnswer := db.GetAnswer(formID, std.PrevRealm().Addr())
 	if previousAnswer == nil {
 		panic("You already submitted this form")
 	}
 
-	if time.Now().Before(form.OpenAt) {
+	// Check time restrictions
+	if !form.IsOpen() {
 		panic("Form is not open yet")
-	} else if time.Now().After(form.CloseAt) {
+	} 
+	if  form.IsClosed() {
 		panic("Form is closed")
 	}
 
+	// Check if answers are formatted correctly
 	if ValidateAnswers(answers, form.Fields) == false {
 		panic("Invalid answers")
 	}
 
-	answer := &Submission{
+	// Save answers
+	answer := Submission{
 		FormID:      formID,
 		Answers:     answers,
 		Author:      std.PrevRealm().Addr(),
 		SubmittedAt: time.Now().String(),
 	}
-
-	db.Answers = append(db.Answers, answer)
+	db.Answers = append(db.Answers, &answer)
 }
 

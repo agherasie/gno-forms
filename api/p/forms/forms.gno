@@ -3,6 +3,7 @@ package forms
 import (
 	"std"
 	"time"
+	"errors"
 
 	"gno.land/p/demo/seqid"
 )
@@ -31,8 +32,8 @@ type Form struct {
 	Fields      []Field
 
 	CreatedAt time.Time
-	OpenAt    time.Time
-	CloseAt   time.Time
+	openAt    *time.Time
+	closeAt   *time.Time
 }
 
 type Submission struct {
@@ -59,6 +60,30 @@ func NewDatabase() *FormDatabase {
 		Forms:   make([]*Form, 0),
 		Answers: make([]*Submission, 0),
 	}
+}
+
+func (form *Form) IsOpen() bool {
+	return form.openAt.Before(time.Now())
+}
+
+func (form *Form) IsClosed() bool {
+	return form.closeAt.Before(time.Now())
+}
+
+func (form *Form) OpenAt() (time.Time, error) {
+	if form.openAt == nil {
+		return time.Time{}, errors.New("Form has no open date")
+	}
+
+	return *form.openAt, nil
+}
+
+func (form *Form) CloseAt() (time.Time, error) {
+	if form.closeAt == nil {
+		return time.Time{}, errors.New("Form has no close date")
+	}
+
+	return *form.closeAt, nil
 }
 
 func (db *FormDatabase) GetForm(id string) *Form {

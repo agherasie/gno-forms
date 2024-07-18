@@ -35,7 +35,7 @@ func TestAnswerFormInvalidForm(t *testing.T) {
 		}
 	]`
 
-	formID := db.CreateForm("Test Form", "Test Description", "2020-01-01", "2020-01-02", data)
+	formID := db.CreateForm("Test Form", "Test Description", "", "", data)
 
 	tests := []struct {
 		name        string

@@ -16,6 +16,7 @@ func ValidateBooleanField(node *json.Node, field Field) bool {
 		return false
 	}
 
+	// If the field is required, checkbox must be checked
 	if field.Required == true && answer == false {
 		return false
 	}
@@ -33,6 +34,7 @@ func ValidateStringField(node *json.Node, field Field) bool {
 		return false
 	}
 
+	// If the field is required, the answer must not be empty
 	if field.Required == true && answer == "" {
 		return false
 	}
@@ -50,6 +52,7 @@ func ValidateNumberField(node *json.Node, field Field) bool {
 		return false
 	}
 
+	// TODO allow 0 as a valid answer even if the field is required
 	if field.Required == true && answer == 0 {
 		return false
 	}

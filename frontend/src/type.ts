@@ -27,8 +27,8 @@ export interface CreatedForm {
   owner: string;
   description: string;
   createdAt: string;
-  openAt: string;
-  closeAt: string;
+  openAt?: string;
+  closeAt?: string;
   fields: {
     label: string;
     description: string;
