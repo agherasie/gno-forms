@@ -88,8 +88,8 @@ const FormCreation: FC = () => {
     createForm({
       title: data.title,
       description: data.description,
-      openAt: data.openAt,
-      closeAt: data.closeAt,
+      openAt: new Date(data.openAt).toISOString(),
+      closeAt: new Date(data.closeAt).toISOString(),
       data: buildDataJson(data.fields),
     });
   });

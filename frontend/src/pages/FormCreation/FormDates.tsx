@@ -21,12 +21,18 @@ const FormDates: FC = () => {
       <SimpleGrid columns={2} w="100%" spacing="24px">
         <FormControl w="100%" isInvalid={!!errors.openAt}>
           <FormLabel>Open at</FormLabel>
-          <Input {...register("openAt", { required: true })} type="date" />
+          <Input
+            {...register("openAt", { required: true })}
+            type="datetime-local"
+          />
           <FormErrorMessage>Field is required</FormErrorMessage>
         </FormControl>
         <FormControl w="100%" isInvalid={!!errors.closeAt}>
           <FormLabel>Close at</FormLabel>
-          <Input {...register("closeAt", { required: true })} type="date" />
+          <Input
+            {...register("closeAt", { required: true })}
+            type="datetime-local"
+          />
           <FormErrorMessage>Field is required</FormErrorMessage>
         </FormControl>
       </SimpleGrid>

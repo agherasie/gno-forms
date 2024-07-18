@@ -2,6 +2,7 @@ package forms
 
 import (
 	"std"
+	"time"
 
 	"gno.land/p/demo/seqid"
 )
@@ -29,9 +30,9 @@ type Form struct {
 	Description string
 	Fields      []Field
 
-	CreatedAt string
-	OpenAt    string
-	CloseAt   string
+	CreatedAt time.Time
+	OpenAt    time.Time
+	CloseAt   time.Time
 }
 
 type Submission struct {
@@ -58,4 +59,22 @@ func NewDatabase() *FormDatabase {
 		Forms:   make([]*Form, 0),
 		Answers: make([]*Submission, 0),
 	}
+}
+
+func (db *FormDatabase) GetForm(id string) *Form {
+	for _, form := range db.Forms {
+		if form.ID == id {
+			return form
+		}
+	}
+	return nil
+}
+
+func (db *FormDatabase) GetAnswer(formID string, author std.Address) *Submission {
+	for _, answer := range db.Answers {
+		if answer.FormID == formID && answer.Author.String() == author.String() {
+			return answer
+		}
+	}
+	return nil
 }

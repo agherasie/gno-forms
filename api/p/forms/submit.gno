@@ -13,6 +13,17 @@ func (db *FormDatabase) SubmitForm(formID string, answers string) {
 		panic(ufmt.Errorf("Form not found: %s", formID))
 	}
 
+	previousAnswer := db.GetAnswer(formID, std.PrevRealm().Addr())
+	if previousAnswer == nil {
+		panic("You already submitted this form")
+	}
+
+	if time.Now().Before(form.OpenAt) {
+		panic("Form is not open yet")
+	} else if time.Now().After(form.CloseAt) {
+		panic("Form is closed")
+	}
+
 	if ValidateAnswers(answers, form.Fields) == false {
 		panic("Invalid answers")
 	}
@@ -27,11 +38,3 @@ func (db *FormDatabase) SubmitForm(formID string, answers string) {
 	db.Answers = append(db.Answers, answer)
 }
 
-func (db *FormDatabase) GetAnswer(formID string, authorID string) *Submission {
-	for _, answer := range db.Answers {
-		if answer.FormID == formID && answer.Author.String() == authorID {
-			return answer
-		}
-	}
-	return nil
-}

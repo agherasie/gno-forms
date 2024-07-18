@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useMemo } from "react";
 import { constants } from "../../constants";
 import { useAccountStore, useProviderStore } from "../../store";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,6 +21,7 @@ import {
   Spinner,
   Switch,
   Text,
+  Tooltip,
   useToast,
   VStack,
 } from "@chakra-ui/react";
@@ -36,11 +37,10 @@ const FormSubmit: FC = () => {
   const { data: form, isLoading } = useQuery({
     queryKey: [id ?? "id", "forms"],
     enabled: !!provider && "evaluateExpression" in provider,
-    queryFn: () => {
-      return provider
+    queryFn: () =>
+      provider
         ?.evaluateExpression(constants.realmPath, `GetFormByID("${id}")`)
-        .then((res) => parseDataJson(res) as CreatedForm);
-    },
+        .then((res) => parseDataJson(res) as CreatedForm),
   });
 
   const { account } = useAccountStore();
@@ -119,6 +119,28 @@ const FormSubmit: FC = () => {
     document.title = `${form?.title} - Gno Forms`;
   }, [form?.title]);
 
+  const { isOpen: isFormOpen, reason: formDisabledReason } = useMemo<{
+    isOpen: boolean;
+    reason: string | null;
+  }>(() => {
+    const now = new Date().getTime();
+    const openAt = new Date(form?.openAt ?? "");
+    const closeAt = new Date(form?.closeAt ?? "");
+    if (now < openAt.getTime()) {
+      return {
+        isOpen: false,
+        reason: `Form opens at ${openAt.toLocaleString()}`,
+      };
+    }
+    if (now > closeAt.getTime()) {
+      return {
+        isOpen: false,
+        reason: `Form is closed since ${closeAt.toLocaleString()}`,
+      };
+    }
+    return { isOpen: true, reason: null };
+  }, [form?.closeAt, form?.openAt]);
+
   return (
     <chakra.form onSubmit={onSubmit} w="100%">
       <VStack w="100%" align="start" px="25%" py="48px" spacing="48px">
@@ -143,19 +165,24 @@ const FormSubmit: FC = () => {
                           <Input
                             {...rhfField}
                             placeholder="Type your answer here"
+                            isDisabled={!isFormOpen}
                           />
                         )}
                         {field.fieldType === FieldType.BOOLEAN && (
-                          <Switch {...rhfField} colorScheme="gray" />
+                          <Switch
+                            {...rhfField}
+                            colorScheme="gray"
+                            isDisabled={!isFormOpen}
+                          />
                         )}
                         {field.fieldType === FieldType.NUMBER && (
-                          <NumberInput>
+                          <NumberInput isDisabled={!isFormOpen}>
                             <NumberInputField {...rhfField}></NumberInputField>
                           </NumberInput>
                         )}
                         {translateFieldType(field.fieldType) ===
                           FieldType.CHOICE && (
-                          <RadioGroup {...rhfField}>
+                          <RadioGroup {...rhfField} isDisabled={!isFormOpen}>
                             <VStack align="start" w="100%">
                               {parseChoices(field.fieldType).map((choice) => (
                                 <Radio key={choice} value={choice}>
@@ -170,7 +197,11 @@ const FormSubmit: FC = () => {
                           <CheckboxGroup {...rhfField}>
                             <VStack align="start" w="100%">
                               {parseChoices(field.fieldType).map((choice) => (
-                                <Checkbox key={choice} value={choice}>
+                                <Checkbox
+                                  key={choice}
+                                  value={choice}
+                                  isDisabled={!isFormOpen}
+                                >
                                   {choice}
                                 </Checkbox>
                               ))}
@@ -185,9 +216,11 @@ const FormSubmit: FC = () => {
             ))}
           </VStack>
         )}
-        <Button w="100%" type="submit">
-          Submit
-        </Button>
+        <Tooltip label={formDisabledReason}>
+          <Button isDisabled={!isFormOpen} w="100%" type="submit">
+            Submit
+          </Button>
+        </Tooltip>
       </VStack>
     </chakra.form>
   );

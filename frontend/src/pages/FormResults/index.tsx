@@ -22,24 +22,22 @@ const FormResults: FC = () => {
   const { data: form, isFetching: isLoadingQuestions } = useQuery({
     queryKey: [id ?? "id", "forms"],
     enabled: !!provider && "evaluateExpression" in provider,
-    queryFn: () => {
-      return provider
+    queryFn: () =>
+      provider
         ?.evaluateExpression(constants.realmPath, `GetFormByID("${id}")`)
-        .then((res) => parseDataJson(res) as CreatedForm);
-    },
+        .then((res) => parseDataJson(res) as CreatedForm),
   });
 
   const { data: answers, isFetching: isLoadingAnswers } = useQuery({
     queryKey: [author ?? "author", "answers"],
     enabled: "evaluateExpression" in provider!,
-    queryFn: () => {
-      return provider
+    queryFn: () =>
+      provider
         ?.evaluateExpression(
           constants.realmPath,
           `GetAnswer("${id}", "${author}")`
         )
-        .then((res) => parseDataJson(res) as string[]);
-    },
+        .then((res) => parseDataJson(res) as string[]),
   });
 
   return (

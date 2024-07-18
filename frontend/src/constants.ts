@@ -9,15 +9,13 @@ const vars = {
 const env = from(vars, {});
 
 export const constants = {
-  chainID: env.get("VITE_CHAIN_ID").default("test4").asString(),
+  chainID: env.get("VITE_CHAIN_ID").default("dev").asString(),
   chainRPC: env
     .get("VITE_CHAIN_RPC")
-    .default("https://rpc.test4.gno.land")
+    .default("http://127.0.0.1:26657")
     .asString(),
   realmPath: env
     .get("VITE_REALM_PATH")
-    .default(
-      "gno.land/r/g1w62226g8hykfmtuasvz80rdf0jl6phgxsphh5v/testing/forms"
-    )
+    .default("gno.land/r/demo/forms")
     .asString(),
 };

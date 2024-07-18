@@ -1,7 +1,9 @@
 package forms
 
 import (
-	"gno.land/p/g1w62226g8hykfmtuasvz80rdf0jl6phgxsphh5v/testing/forms"
+	"std"
+
+	"gno.land/p/demo/forms"
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
 )
@@ -34,9 +36,9 @@ func GetForms() string {
 			"owner":       json.StringNode("owner", form.Owner.String()),
 			"title":       json.StringNode("title", form.Title),
 			"description": json.StringNode("description", form.Description),
-			"createdAt":   json.StringNode("createdAt", form.CreatedAt),
-			"openAt":      json.StringNode("openAt", form.OpenAt),
-			"closeAt":     json.StringNode("closeAt", form.CloseAt),
+			"createdAt":   json.StringNode("createdAt", form.CreatedAt.String()),
+			"openAt":      json.StringNode("openAt", form.OpenAt.String()),
+			"closeAt":     json.StringNode("closeAt", form.CloseAt.String()),
 			"fields":      fieldsJson,
 		})
 		formsJson.AppendArray(formJson)
@@ -75,9 +77,9 @@ func GetFormByID(id string) string {
 		"owner":       json.StringNode("owner", form.Owner.String()),
 		"title":       json.StringNode("title", form.Title),
 		"description": json.StringNode("description", form.Description),
-		"createdAt":   json.StringNode("createdAt", form.CreatedAt),
-		"openAt":      json.StringNode("openAt", form.OpenAt),
-		"closeAt":     json.StringNode("closeAt", form.CloseAt),
+		"createdAt":   json.StringNode("createdAt", form.CreatedAt.String()),
+		"openAt":      json.StringNode("openAt", form.OpenAt.String()),
+		"closeAt":     json.StringNode("closeAt", form.CloseAt.String()),
 		"fields":      fieldsJson,
 	})
 
@@ -95,7 +97,7 @@ func GetAnswer(formID string, authorID string) string {
 		panic(ufmt.Errorf("Form not found: %s", formID))
 	}
 
-	answer := db.GetAnswer(formID, authorID)
+	answer := db.GetAnswer(formID, std.Address(authorID))
 	if answer == nil {
 		panic(ufmt.Errorf("Answer not found: %s", authorID))
 	}
