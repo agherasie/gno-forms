@@ -35,8 +35,6 @@ func TestAnswerFormInvalidForm(t *testing.T) {
 		}
 	]`
 
-	formID := db.CreateForm("Test Form", "Test Description", "", "", data)
-
 	tests := []struct {
 		name        string
 		answer      string
@@ -84,13 +82,20 @@ func TestAnswerFormInvalidForm(t *testing.T) {
 		},
 		{
 			name:        "required string",
-			answer:      `["", true, 0, [0, 1]]`,
+			answer:      `["", 21, true, 0, [0, 1]]`,
 			expectPanic: true,
+		},
+		{
+			name:        "unrequired number",
+			answer:      `["Alex", null, true, 0, [0, 1]]`,
+			expectPanic: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			formID := db.CreateForm("Test Form", "Test Description", "", "", data)
+
 			defer func() {
 				if r := recover(); r != nil {
 					if tt.expectPanic {

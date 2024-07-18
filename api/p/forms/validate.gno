@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"gno.land/p/demo/json"
+	"gno.land/p/demo/ufmt"
 )
 
 func ValidateBooleanField(node *json.Node, field Field) bool {
@@ -47,13 +48,8 @@ func ValidateNumberField(node *json.Node, field Field) bool {
 		return false
 	}
 
-	answer, err := node.GetNumeric()
+	_, err := node.GetNumeric()
 	if err != nil {
-		return false
-	}
-
-	// TODO allow 0 as a valid answer even if the field is required
-	if field.Required == true && answer == 0 {
 		return false
 	}
 
@@ -120,30 +116,33 @@ func ValidateAnswers(answers string, fields []Field) bool {
 		if err != nil {
 			return false
 		}
+		
+		if answer.IsNull() && !field.Required {
+			return true
+		}
+
 		if field.FieldType == "boolean" {
 			if ValidateBooleanField(answer, field) == false {
 				return false
 			}
-		}
-		if field.FieldType == "string" {
+		} else if field.FieldType == "string" {
 			if ValidateStringField(answer, field) == false {
 				return false
 			}
-		}
-		if field.FieldType == "number" {
+		} else if field.FieldType == "number" {
 			if ValidateNumberField(answer, field) == false {
 				return false
 			}
-		}
-		if field.FieldType[0] == '{' && field.FieldType[len(field.FieldType)-1] == '}' {
+		} else if field.FieldType[0] == '{' && field.FieldType[len(field.FieldType)-1] == '}' {
 			if ValidateMultiChoiceField(answer, field) == false {
 				return false
 			}
-		}
-		if field.FieldType[0] == '[' && field.FieldType[len(field.FieldType)-1] == ']' {
+		} else if field.FieldType[0] == '[' && field.FieldType[len(field.FieldType)-1] == ']' {
 			if ValideChoiceField(answer, field) == false {
 				return false
 			}
+		} else {
+			return false
 		}
 	}
 
