@@ -11,6 +11,7 @@ import { FieldType } from "../../../type";
 import useGetUrlFormDetails from "../../../hooks/useGetUrlFormDetails";
 import useGetUrlSubmissionDetails from "../../../hooks/useGetUrlSubmissionDetails";
 import { parseChoices, translateFieldType } from "../../../utils";
+import BackButton from "../../../components/BackButton";
 
 const FormSubmission: FC = () => {
   const { data: form, isFetching: isLoadingQuestions } = useGetUrlFormDetails();
@@ -19,6 +20,7 @@ const FormSubmission: FC = () => {
 
   return (
     <VStack w="100%" px="25%" py="48px" spacing="24px">
+      <BackButton />
       <VStack align="start" spacing="8px">
         {isLoadingQuestions ? (
           <Skeleton w="100px" h="24px" />

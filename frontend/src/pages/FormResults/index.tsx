@@ -3,6 +3,7 @@ import { FC } from "react";
 import useGetUrlFormDetails from "../../hooks/useGetUrlFormDetails";
 import { useNavigate } from "react-router-dom";
 import { selectColor } from "../../utils";
+import BackButton from "../../components/BackButton";
 
 const FormResults: FC = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const FormResults: FC = () => {
 
   return (
     <VStack w="100%" px="25%" py="48px" spacing="24px">
+      <BackButton />
       {isLoading ? (
         <Spinner />
       ) : (

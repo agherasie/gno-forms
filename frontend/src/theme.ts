@@ -11,6 +11,10 @@ const Button = defineStyleConfig({
       fontFamily: "heading",
       color: "gray.100",
       _hover: {
+        _disabled: {
+          bg: "gray.600",
+          color: "gray.100",
+        },
         bg: "gray.700",
         color: "gray.200",
       },

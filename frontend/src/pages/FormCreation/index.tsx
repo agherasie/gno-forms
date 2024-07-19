@@ -1,4 +1,4 @@
-import { Button, chakra, useToast, VStack } from "@chakra-ui/react";
+import { Button, chakra, Tooltip, useToast, VStack } from "@chakra-ui/react";
 import { FC, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { FormCreationData, FieldType, CreateFormDto } from "../../type";
@@ -12,6 +12,7 @@ import { constants } from "../../constants";
 import { buildDataJson } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import BackButton from "../../components/BackButton";
 
 const FormCreation: FC = () => {
   const methods = useForm<FormCreationData>({
@@ -98,14 +99,17 @@ const FormCreation: FC = () => {
     <chakra.form onSubmit={onSubmit} w="100%">
       <FormProvider {...methods}>
         <VStack py="24px" px="25%" spacing="48px">
+          <BackButton />
           <VStack align="start" w="100%" spacing="24px">
             <FormHeader />
             <FormDates />
             <FormFields />
           </VStack>
-          <Button w="100%" type="submit">
-            Create form
-          </Button>
+          <Tooltip label={!account && "Please connect wallet"}>
+            <Button isDisabled={!account} w="100%" type="submit">
+              Create form
+            </Button>
+          </Tooltip>
         </VStack>
       </FormProvider>
     </chakra.form>

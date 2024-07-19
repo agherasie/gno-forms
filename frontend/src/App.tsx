@@ -1,10 +1,18 @@
-import { ChakraProvider, HStack, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  ChakraProvider,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerOverlay,
+  HStack,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { FC, useEffect } from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import theme, { colors } from "./theme";
 import FormCreation from "./pages/FormCreation";
-import ConnectWallet from "./components/ConnectWallet";
 import { useProviderStore } from "./store";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { constants } from "./constants";
@@ -12,21 +20,41 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FormSubmit from "./pages/FormSubmit";
 import FormSubmission from "./pages/FormResults/Details";
 import FormResults from "./pages/FormResults";
+import WalletDrawer from "./components/WalletDrawer";
+import WalletIndicator from "./components/WalletDrawer/WalletIndicator";
 
-const Layout: FC = () => (
-  <VStack w="100%" align="start" spacing={0}>
-    <HStack
-      w="100%"
-      borderBottom={`1px solid ${colors.gray[300]}`}
-      p="12px"
-      justify="center"
-      bg="gray.200"
-    >
-      <ConnectWallet />
-    </HStack>
-    <Outlet />
-  </VStack>
-);
+const Layout: FC = () => {
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
+  return (
+    <>
+      <Drawer size="md" isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent onMouseLeave={onClose}>
+          <DrawerBody
+            p="16px"
+            border={`1px solid ${colors.gray[300]}`}
+            bg="gray.100"
+          >
+            <WalletDrawer />
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+      <HStack w="100%" h="100vh" align="start" justify="space-between">
+        <Outlet />
+        <Box
+          onMouseEnter={onOpen}
+          right="0px"
+          position="fixed"
+          h="100%"
+          p="16px"
+        >
+          <WalletIndicator />
+        </Box>
+      </HStack>
+    </>
+  );
+};
 
 const queryClient = new QueryClient();
 

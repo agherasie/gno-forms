@@ -29,6 +29,7 @@ import { Controller, useForm } from "react-hook-form";
 import { AdenaService } from "../../services/adena/adena";
 import { EMessageType } from "../../services/adena/adena.types";
 import useGetUrlFormDetails from "../../hooks/useGetUrlFormDetails";
+import BackButton from "../../components/BackButton";
 
 const FormSubmit: FC = () => {
   const { data: form, isLoading } = useGetUrlFormDetails();
@@ -116,24 +117,26 @@ const FormSubmit: FC = () => {
     const now = new Date().getTime();
     const openAt = new Date(form?.openAt ?? "");
     const closeAt = new Date(form?.closeAt ?? "");
-    if (now < openAt.getTime()) {
+
+    if (!account)
+      return { isOpen: false, reason: "Please connect your wallet" };
+    if (now < openAt.getTime())
       return {
         isOpen: false,
         reason: `Form opens at ${openAt.toLocaleString()}`,
       };
-    }
-    if (now > closeAt.getTime()) {
+    if (now > closeAt.getTime())
       return {
         isOpen: false,
         reason: `Form is closed since ${closeAt.toLocaleString()}`,
       };
-    }
     return { isOpen: true, reason: null };
-  }, [form?.closeAt, form?.openAt]);
+  }, [account, form?.closeAt, form?.openAt]);
 
   return (
     <chakra.form onSubmit={onSubmit} w="100%">
       <VStack w="100%" align="start" px="25%" py="48px" spacing="48px">
+        <BackButton />
         <VStack w="100%" align="start" spacing="12px">
           <Heading>{form?.title}</Heading>
           <Text>{form?.description}</Text>
